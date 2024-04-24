@@ -1,0 +1,57 @@
+docker-compose up
+docker-compose down
+=============================
+to login into the container and create the topic:
+docker exec -it kafka1 bash
+
+create-topic:
+kafka-topics --bootstrap-server kafka1:19092 \
+             --create \
+             --topic test-topic \
+             --replication-factor 1 --partitions 1
+			 
+			 type "exit" to exit from the container
+=====================================
+Producer and Consume the Messages:
+to run commands inside the container: to produce the message
+docker exec --interactive --tty kafka1  /usr/bin/kafka-console-producer --bootstrap-server kafka1:19092 --topic test-topic
+
+to consume the message:
+docker exec --interactive --tty kafka1  /usr/bin/kafka-console-consumer --bootstrap-server kafka1:19092 --topic test-topic --from-beginning
+
+
+Producer and Consume the Messages With Key and Value:
+docker exec --interactive --tty kafka1 /usr/bin/kafka-console-producer --bootstrap-server kafka1:19092 --topic test-topic --property "key.separator=-" --property "parse.key=true"
+					   
+docker exec --interactive --tty kafka1 /usr/bin/kafka-console-consumer --bootstrap-server kafka1:19092 --topic test-topic --from-beginning --property "key.separator= - " --property "print.key=true"
+
+
+
+Consume Messages using Consumer Groups:
+docker exec --interactive --tty kafka1  /usr/bin/kafka-console-consumer --bootstrap-server kafka1:19092 --topic test-topic --group console-consumer-t1 --property "key.separator= - " --property "print.key=true"
+
+List the topics in a cluster:
+docker exec --interactive --tty kafka1  kafka-topics --bootstrap-server kafka1:19092 --list
+docker exec --interactive --tty kafka1  kafka-topics --bootstrap-server kafka1:19092 --describe
+
+docker exec --interactive --tty kafka1 kafka-topics --bootstrap-server kafka1:19092 --describe --topic test-topic
+
+Alter the topic partitions:
+docker exec --interactive --tty kafka1  /usr/bin/kafka-topics --bootstrap-server kafka1:19092 --alter --topic test-topic --partitions 2
+docker exec --interactive --tty kafka1  kafka-topics --bootstrap-server kafka1:19092 --describe
+
+***How to view consumer groups:
+docker exec --interactive --tty kafka1 kafka-consumer-groups --bootstrap-server kafka1:19092 --list
+
+D:\Nachal\nachakkafka\kafka-for-developers-using-spring-boot-v2-main>
+docker exec --interactive --tty kafka1 kafka-consumer-groups --bootstrap-server kafka1:19092 --list
+console-consumer-93077
+console-consumer-96359
+
+Consumer Groups and their Offset
+docker exec --interactive --tty kafka1 /usr/bin/kafka-consumer-groups --bootstrap-server kafka1:19092 --describe --group console-consumer-t1
+
+=========================================================
+
+Consume Messages using Consumer Groups
+docker exec --interactive --tty /usr/bin/kafka1 kafka-console-consumer --bootstrap-server kafka1:19092 --topic test-topic --group console-consumer-41911 --property "key.separator= - " --property "print.key=true"
